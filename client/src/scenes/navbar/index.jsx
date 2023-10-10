@@ -56,7 +56,7 @@ const Navbar = () => {
             },
           }}
         >
-          SocialCode
+          Social Code
         </Typography>
         {isNonMobileScreens && (
           <FlexBetween
