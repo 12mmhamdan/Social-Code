@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 /* REGISTER USER */
+/* REGISTER USER */
 export const register = async (req, res) => {
   try {
     const {
@@ -10,11 +11,12 @@ export const register = async (req, res) => {
       lastName,
       email,
       password,
-      picturePath,
       friends,
       location,
       occupation,
     } = req.body;
+
+    const picturePath = req.file.path; // URL of the uploaded image
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -24,7 +26,7 @@ export const register = async (req, res) => {
       lastName,
       email,
       password: passwordHash,
-      picturePath,
+      picturePath, // use the URL of the uploaded image
       friends,
       location,
       occupation,
