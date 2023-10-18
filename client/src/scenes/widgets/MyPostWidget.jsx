@@ -27,9 +27,7 @@ const MyPostWidget = ({ picturePath }) => {
   const handlePost = async () => {
     const formData = new FormData();
     formData.append("userId", _id);
-    if (post) {
-      formData.append("description", post);
-    }
+    formData.append("description", post);
     if (image) {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
@@ -42,24 +40,19 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("audio", audio);
       formData.append("audioPath", audio.name);
     }
-  
-    const response = await fetch(`https://social-code-server.onrender.com/posts`, {
+
+    const response = await fetch(`https://social-code.onrender.com/posts`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
-    if (response.ok) {
-      const posts = await response.json();
-      dispatch(setPosts({ posts }));
-      setImage(null);
-      setClip(null);
-      setAudio(null);
-      setPost("");
-    } else {
-      console.error("Failed to post: ", response.status);
-    }
+    const posts = await response.json();
+    dispatch(setPosts({ posts }));
+    setImage(null);
+    setClip(null);
+    setAudio(null);
+    setPost("");
   };
-  
 
   return (
     <WidgetWrapper>
