@@ -4,11 +4,22 @@ import User from "../models/User.js";
 /* CREATE */
 export const createPost = async (req, res) => {
   try {
-    const picturePath = req.file.path; // URL of the uploaded image
-    const audioPath = req.file.path; // URL of the uploaded image
-    const clipPath = req.file.path; // URL of the uploaded image
+    let picturePath = "";
+    let audioPath = "";
+    let clipPath = "";
 
-    const { userId, description} = req.body;
+    if (req.file) {
+      const { fieldname, path } = req.file;
+      if (fieldname === "picture") {
+        picturePath = path;
+      } else if (fieldname === "audio") {
+        audioPath = path;
+      } else if (fieldname === "clip") {
+        clipPath = path;
+      }
+    }
+
+    const { userId, description } = req.body;
     const user = await User.findById(userId);
     const newPost = new Post({
       userId,
@@ -31,6 +42,7 @@ export const createPost = async (req, res) => {
     res.status(409).json({ message: err.message });
   }
 };
+
 
 /* READ */
 export const getFeedPosts = async (req, res) => {
