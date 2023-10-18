@@ -15,6 +15,8 @@ const PostWidget = ({
   location,
   picturePath,
   userPicturePath,
+  clipPath,
+  audioPath,
   likes,
   comments,
   editPost,
