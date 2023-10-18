@@ -46,12 +46,16 @@ const MyPostWidget = ({ picturePath }) => {
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    setClip(null);
-    setAudio(null);
-    setPost("");
+    if (response.ok) {
+      const posts = await response.json();
+      dispatch(setPosts({ posts }));
+      setImage(null);
+      setClip(null);
+      setAudio(null);
+      setPost("");
+    } else {
+      console.error("Failed to post: ", response.status);
+    }
   };
 
   return (
