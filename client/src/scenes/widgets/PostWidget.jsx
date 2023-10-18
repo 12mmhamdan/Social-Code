@@ -1,9 +1,15 @@
-import { ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined, EditOutlined } from "@mui/icons-material";
+import React, { useState } from "react";
+import {
+  ChatBubbleOutlineOutlined,
+  FavoriteBorderOutlined,
+  FavoriteOutlined,
+  ShareOutlined,
+  EditOutlined,
+} from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography, useTheme, TextField, Button } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 
@@ -31,7 +37,7 @@ const PostWidget = ({
   const likeCount = Object.keys(likes).length;
 
   const { palette } = useTheme();
-  const main = palette.neutral.main;
+  const main = palette.text.primary;
   const primary = palette.primary.main;
 
   const patchLike = async () => {
@@ -47,28 +53,27 @@ const PostWidget = ({
     dispatch(setPost({ post: updatedPost }));
   };
 
-  const editPostHandler = async (postId, newPostData) => {
-    const response = await fetch(`https://social-code.onrender.com/posts/${postId}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: loggedInUserId, description: newPostData }),
-    });
-  
-    if (response.ok) {
-      const updatedPost = await response.json();
-      dispatch(setPost({ post: updatedPost }));
-    } else {
-      // Handle error
-    }
-  };
+  const editPostHandler = async () => {
+    try {
+      const response = await fetch(`https://social-code.onrender.com/posts/${postId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId, description: editDescription }),
+      });
 
-  const handleEditPost = () => {
-    // Call editPostHandler function with postId as argument
-    editPostHandler(postId, editDescription);
-    setIsEditing(false);
+      if (response.ok) {
+        const updatedPost = await response.json();
+        dispatch(setPost({ post: updatedPost }));
+        setIsEditing(false);
+      } else {
+        console.error("Failed to update post: ", response.status);
+      }
+    } catch (error) {
+      console.error("Error updating post: ", error);
+    }
   };
 
   const handleEditChange = (event) => {
@@ -85,11 +90,8 @@ const PostWidget = ({
       />
       {isEditing ? (
         <div>
-          <TextField
-            value={editDescription}
-            onChange={handleEditChange}
-          />
-          <Button onClick={handleEditPost}>Save</Button>
+          <TextField value={editDescription} onChange={handleEditChange} />
+          <Button onClick={editPostHandler}>Save</Button>
         </div>
       ) : (
         <Typography color={main} sx={{ mt: "1rem" }}>
@@ -105,15 +107,13 @@ const PostWidget = ({
           src={picturePath}
         />
       )}
+      {clipPath && <video controls src={clipPath} style={{ width: "100%", borderRadius: "0.75rem", marginTop: "0.75rem" }} />}
+      {audioPath && <audio controls src={audioPath} style={{ width: "100%", borderRadius: "0.75rem", marginTop: "0.75rem" }} />}
       <FlexBetween mt="0.25rem">
         <FlexBetween gap="1rem">
           <FlexBetween gap="0.3rem">
             <IconButton onClick={patchLike}>
-              {isLiked ? (
-                <FavoriteOutlined sx={{ color: primary }} />
-              ) : (
-                <FavoriteBorderOutlined />
-              )}
+              {isLiked ? <FavoriteOutlined sx={{ color: primary }} /> : <FavoriteBorderOutlined />}
             </IconButton>
             <Typography>{likeCount}</Typography>
           </FlexBetween>
@@ -139,9 +139,7 @@ const PostWidget = ({
           {comments.map((comment, i) => (
             <Box key={`${name}-${i}`}>
               <Divider />
-              <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                {comment}
-              </Typography>
+              <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>{comment}</Typography>
             </Box>
           ))}
           <Divider />
