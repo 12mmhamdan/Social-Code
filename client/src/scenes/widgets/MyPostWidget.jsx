@@ -36,9 +36,9 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("clip", clip);
       formData.append("clipPath", clip.name);
     }
-    if (clip) {
-      formData.append("clip", clip);
-      formData.append("clipPath", clip.name);
+    if (audio) {
+      formData.append("audio", audio);
+      formData.append("audioPath", audio.name);
     }
 
     const response = await fetch(`https://social-code-server.onrender.com/posts`, {
