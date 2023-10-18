@@ -133,10 +133,49 @@ const MyPostWidget = ({ picturePath }) => {
 
         {isNonMobileScreens ? (
           <>
-            <FlexBetween gap="0.25rem">
-              <GifBoxOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Clip</Typography>
-            </FlexBetween>
+            <FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
+      <GifBoxOutlined sx={{ color: mediumMain }} />
+      <Typography color={mediumMain}>GIF</Typography>
+    </FlexBetween>
+    <Box
+      border={`1px solid ${medium}`}
+      borderRadius="5px"
+      mt="1rem"
+      p="1rem"
+    >
+      <Dropzone
+        acceptedFiles=".gif" // Allowing only .gif files
+        multiple={false}
+        onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+      >
+        {({ getRootProps, getInputProps }) => (
+          <FlexBetween>
+            <Box
+              {...getRootProps()}
+              border={`2px dashed ${palette.primary.main}`}
+              p="1rem"
+              width="100%"
+              sx={{ "&:hover": { cursor: "pointer" } }}
+            >
+              <input {...getInputProps()} />
+              {!image ? (
+                <p>Add GIF Here</p>
+              ) : (
+                <FlexBetween>
+                  <Typography>{image.name}</Typography>
+                  <EditOutlined />
+                </FlexBetween>
+              )}
+            </Box>
+            {image && (
+              <IconButton onClick={() => setImage(null)} sx={{ width: "15%" }}>
+                <DeleteOutlined />
+              </IconButton>
+            )}
+          </FlexBetween>
+        )}
+      </Dropzone>
+    </Box>
 
             <FlexBetween gap="0.25rem">
               <AttachFileOutlined sx={{ color: mediumMain }} />
