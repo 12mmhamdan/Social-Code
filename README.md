@@ -85,4 +85,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - Kevin McClain for collaboration and contributions to the project.
 - The open-source community for providing essential tools and libraries.
 
-For any questions or support, please contact us at [your-email@example.com].
+For any questions or support, please contact us at [hamdanmoataz@gmail.com].
