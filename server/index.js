@@ -24,7 +24,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin"}));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -33,18 +33,17 @@ app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 
 /* CLOUDINARY CONFIGURATION */
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
+    cloud_name:'djvpgim4w',
+    api_key:'238442638351457',
+    api_secret:'xqr6JiZ_3Tb5umLBSa4hIayJQ0k',
 });
-
-console.log('Cloudinary Config:', cloudinary.config()); // Log the Cloudinary config
+console.log(cloudinary.config());
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'uploads',
-        format: async (req, file) => file.originalname.split('.').pop(), // Use the original file extension
+        format: (req, file) => file.originalname.split('.').pop(), // Use the original file extension
         public_id: (req, file) => {
             const uniquePrefix = Date.now().toString();
             const randomString = Math.random().toString(36).substring(2, 7);
@@ -53,27 +52,17 @@ const storage = new CloudinaryStorage({
     },
 });
 
+
 const upload = multer({ storage: storage });
 
 /* ROUTES WITH FILES */
-app.post("/auth/register", upload.single("picture"), (req, res, next) => {
-    register(req, res).catch(next);
-});
-
-app.post("/posts", verifyToken, upload.fields([{ name: 'picture', maxCount: 1 }, { name: 'clip', maxCount: 1 }, { name: 'audio', maxCount: 1 }]), (req, res, next) => {
-    createPost(req, res).catch(next);
-});
+app.post("/auth/register", upload.single("picture"), register);
+app.post("/posts", verifyToken, upload.fields([{ name: 'picture', maxCount: 1 }, { name: 'clip', maxCount: 1 }, { name: 'audio', maxCount: 1 }]), createPost);
 
 /* ROUTES */
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
-
-/* ERROR HANDLING MIDDLEWARE */
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
-});
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
