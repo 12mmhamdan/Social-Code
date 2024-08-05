@@ -33,9 +33,9 @@ app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 
 /* CLOUDINARY CONFIGURATION */
 cloudinary.config({
-    cloud_name: 'djvpgim4w',
-    api_key: '238442638351457',
-    api_secret: 'xqr6JiZ_3Tb5umLBSa4hIayJQ0k'
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
 });
 
 const storage = new CloudinaryStorage({
